@@ -1,7 +1,21 @@
-fun main(args: Array<String>) {
-    println("Hello World!")
+package ru.tfs
 
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
+fun main() {
+    val worker = WarehouseWorker(100.00.toBigDecimal())
+    worker.payWages(10000)
+    worker.takeDayOff()
+
+    val manager = SalesManager(
+        salesPerMonthAmount = 15.00.toBigDecimal(),
+        pricePerSale = 100.00.toBigDecimal()
+    )
+    manager.payWages(1000.00.toBigDecimal())
+    manager.calculateMonthlyBonus(10.00.toBigDecimal(), 20.00.toBigDecimal())
+
+    listOf(manager, worker).forEach {
+        it.payWages(10000)
+    }
+
+    val contractor = Contractor(manager)
+    contractor.pay(monthCount = 3)
 }
