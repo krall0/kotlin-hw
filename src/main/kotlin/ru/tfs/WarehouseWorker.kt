@@ -23,4 +23,6 @@ class WarehouseWorker(private val monthlyRate: BigDecimal) : Employee {
         extraDaysOff--
         println("WarehouseWorker taked extra day off, remained: $extraDaysOff")
     }
+
+    fun getSalaryAccount() : BigDecimal = salaryAccount
 }

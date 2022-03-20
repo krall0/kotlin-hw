@@ -22,4 +22,6 @@ class SalesManager(private val salesPerMonthAmount: BigDecimal, private val pric
             println("SalesManager's bonus paid: $bonusAmount, total amount: $bankAccount")
         }
     }
+
+    fun getBankAccount() : BigDecimal = bankAccount
 }
