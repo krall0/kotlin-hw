@@ -11,8 +11,8 @@ import java.util.*
 @RequestMapping("/users")
 class UserController(private val userService: UserService) {
 
-    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun addUser(@RequestBody addUserRequest: AddUserRequest): UserInfo =
+    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun addUser(@RequestBody addUserRequest: AddUserRequest) =
         userService.addUser(addUserRequest)
 
     @GetMapping("/{userId}", produces = [MediaType.APPLICATION_JSON_VALUE])
