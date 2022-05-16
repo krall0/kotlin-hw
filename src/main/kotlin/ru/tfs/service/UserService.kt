@@ -1,11 +1,19 @@
 package ru.tfs.service
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import ru.tfs.db.entity.UserEntity
 import ru.tfs.db.repository.UserRepository
 import ru.tfs.exception.UserNotFoundException
-import ru.tfs.model.UserRequest
-import ru.tfs.model.UserInfo
+import ru.tfs.dto.UserResponse
+import ru.tfs.dto.UserDetails
+import ru.tfs.dto.UserInfo
+import ru.tfs.dto.UserRequest
+
 import java.util.*
 
 @Service
@@ -14,26 +22,21 @@ class UserService(
     private val taxClient: TaxClient
 ) {
 
-    fun addUser(userRequest: UserRequest) {
-        val inn = taxClient.getInn(userRequest.docNumber)
-        requireNotNull(inn) { "Invalid doc number" }
+    fun addUser(userRequest: UserRequest): UserResponse {
+        val userId = UUID.randomUUID()
 
-        val userEntity = UserEntity().apply {
-            this.id = UUID.randomUUID()
-            this.name = userRequest.name
-            this.docNumber = userRequest.docNumber
-            this.inn = inn
+        CoroutineScope(Dispatchers.Default).launch {
+            val userDetails = taxClient.getUserDetails(userRequest)
+            withContext(Dispatchers.IO) {
+                userRepository.save(toUserEntity(userId, userDetails))
+            }
         }
-        userRepository.add(userEntity)
+
+        return UserResponse(userId = userId)
     }
 
     fun getUserInfo(userId: UUID): UserInfo {
-        return userRepository.getById(userId)?.toUserInfo() ?: throw UserNotFoundException(userId)
-    }
-
-    fun findUsers(name: String, page: Int, size: Int): List<UserInfo> {
-        return userRepository.getAllByName(name, page, size)
-            .map { it.toUserInfo() }
+        return userRepository.findByIdOrNull(userId)?.toUserInfo() ?: throw UserNotFoundException(userId)
     }
 
     private fun UserEntity.toUserInfo(): UserInfo {
@@ -43,5 +46,14 @@ class UserService(
             docNumber = this.docNumber,
             inn = this.inn
         )
+    }
+
+    private fun toUserEntity(userId: UUID, userDetails: UserDetails): UserEntity {
+        return UserEntity().apply {
+            this.id = userId
+            this.name = userDetails.name
+            this.docNumber = userDetails.docNumber
+            this.inn = userDetails.inn
+        }
     }
 }

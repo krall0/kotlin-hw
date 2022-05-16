@@ -1,4 +1,4 @@
-package ru.tfs.model
+package ru.tfs.dto
 
 import java.util.*
 

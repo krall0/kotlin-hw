@@ -1,4 +1,4 @@
-package ru.tfs.model
+package ru.tfs.dto
 
 data class UserRequest(
     val name: String,

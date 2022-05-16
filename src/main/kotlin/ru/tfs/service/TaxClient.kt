@@ -1,22 +1,27 @@
 package ru.tfs.service
 
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
-import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.getForObject
+import org.springframework.web.reactive.function.BodyInserters.fromValue
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.awaitBody
+import ru.tfs.config.properties.TaxApiConfigurationProps
+import ru.tfs.dto.UserRequest
+import ru.tfs.dto.UserDetails
 
 @Service
 class TaxClient(
-    private val restTemplate: RestTemplate,
-    @Value("\${tax-service.address}") private val taxServiceAddress: String
+    private val webClient: WebClient,
+    private val taxApiConfigurationProps: TaxApiConfigurationProps
 ) {
 
-    fun getInn(docNumber: String): String? = try {
-        restTemplate.getForObject("$taxServiceAddress$GET_INN_BY_DOCNUM", docNumber)
-    } catch (e: HttpClientErrorException.NotFound) {
-        null
+    suspend fun getUserDetails(request: UserRequest): UserDetails {
+        return webClient.post()
+            .uri(taxApiConfigurationProps.getUserDetailsURL)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .body(fromValue(request))
+            .retrieve()
+            .awaitBody()
     }
 }
-
-private const val GET_INN_BY_DOCNUM = "/inn?docnum={docnum}"
