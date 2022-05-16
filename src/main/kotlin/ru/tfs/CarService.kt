@@ -12,8 +12,7 @@ class CarService(private val translator: Translator) {
     }
 
     fun groupByBodyType(cars: List<Car>): Map<String, List<Car>> {
-        return cars.asSequence()
-            .groupBy { it.bodyType }
+        return cars.groupBy { it.bodyType }
     }
 
     fun filterByPriceLower(cars: List<Car>, maxPrice: Int): List<String> {
