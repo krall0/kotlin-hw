@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="vera" id="create-table-users">
+        <sql>
+            CREATE TABLE users
+            (
+              id UUID PRIMARY KEY,
+              name VARCHAR(50) NOT NULL,
+              doc_number VARCHAR(15) UNIQUE NOT NULL,
+              inn VARCHAR(20) NOT NULL
+            );
+        </sql>
+    </changeSet>
+    <changeSet author="vera" id="insert-data-to-users-table">
+        <sql>
+            INSERT INTO users (id, name, doc_number, inn)
+            VALUES ('4e85ba66-f8af-41cd-a7d8-147ce35c03ec', 'Ivan', '1111567', '001234567890');
+            INSERT INTO users (id, name, doc_number, inn)
+            VALUES ('50184951-d37d-413a-94bf-492be15f3663', 'Andrey', '2564097', '001234566754');
+            INSERT INTO users (id, name, doc_number, inn)
+            VALUES ('943686a9-f3ba-402a-8a55-5d7468597758', 'Andrey', '2564098', '001233458798');
+            INSERT INTO users (id, name, doc_number, inn)
+            VALUES ('7034e6da-93e3-49fc-ab8a-791a876e6797', 'Andrey', '2564099', '001233458799');
+            INSERT INTO users (id, name, doc_number, inn)
+            VALUES ('4e4502f8-dd78-4c91-bed9-86c13873d109', 'Andrey', '2564100', '001233458800');
+        </sql>
+    </changeSet>
+</databaseChangeLog>
