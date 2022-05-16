@@ -1,8 +1,8 @@
-package ru.tfs
+package ru.tfs.controller
 
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import ru.tfs.model.AddUserRequest
+import ru.tfs.model.UserRequest
 import ru.tfs.model.UserInfo
 import ru.tfs.service.UserService
 import java.util.*
@@ -12,8 +12,8 @@ import java.util.*
 class UserController(private val userService: UserService) {
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun addUser(@RequestBody addUserRequest: AddUserRequest): UserInfo =
-        userService.addUser(addUserRequest)
+    fun addUser(@RequestBody userRequest: UserRequest): UserInfo =
+        userService.addUser(userRequest)
 
     @GetMapping("/{userId}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getUserInfo(@PathVariable userId: UUID): UserInfo =

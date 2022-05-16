@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActionsDsl
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import ru.tfs.model.AddUserRequest
+import ru.tfs.model.UserRequest
 import ru.tfs.model.UserInfo
 import ru.tfs.repository.UserRepository
 import ru.tfs.service.TaxClient
@@ -48,8 +48,8 @@ class UserServiceTest(private val mockMvc: MockMvc, private val objectMapper: Ob
     init {
         feature("add user") {
             scenario("success") {
-                val addUserRequest = AddUserRequest(name = "Olga", docNumber = "005678")
-                val userInfo = addUser(addUserRequest)
+                val userRequest = UserRequest(name = "Olga", docNumber = "005678")
+                val userInfo = addUser(userRequest)
                 userInfo should {
                     it.name shouldBe "Olga"
                     it.docNumber shouldBe "005678"
@@ -57,8 +57,8 @@ class UserServiceTest(private val mockMvc: MockMvc, private val objectMapper: Ob
                 }
             }
             scenario("failure - invalid doc number") {
-                val addUserRequest = AddUserRequest(name = "Olga", docNumber = "INVALID_DOCNUM")
-                addUserAndGetStatus(addUserRequest) shouldBe HttpStatus.BAD_REQUEST.value()
+                val userRequest = UserRequest(name = "Olga", docNumber = "INVALID_DOCNUM")
+                addUserAndGetStatus(userRequest) shouldBe HttpStatus.BAD_REQUEST.value()
             }
         }
 
@@ -127,16 +127,16 @@ class UserServiceTest(private val mockMvc: MockMvc, private val objectMapper: Ob
         }
     }
 
-    private fun addUser(addUserRequest: AddUserRequest): UserInfo =
+    private fun addUser(userRequest: UserRequest): UserInfo =
         mockMvc.post("/users") {
             contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(addUserRequest)
+            content = objectMapper.writeValueAsString(userRequest)
         }.readResponse()
 
-    private fun addUserAndGetStatus(addUserRequest: AddUserRequest) =
+    private fun addUserAndGetStatus(userRequest: UserRequest) =
         mockMvc.post("/users") {
             contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(addUserRequest)
+            content = objectMapper.writeValueAsString(userRequest)
         }
             .andReturn().response.status
 
