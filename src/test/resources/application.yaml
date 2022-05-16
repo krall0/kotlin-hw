@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: usermgr
+  profiles:
+    active: test
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: username
+    password: password
+  liquibase:
+    change-log: db/changelog/db.changelog-master.xml
+    enabled: true
+  jpa:
+    show-sql: true
+    open-in-view: false
+server:
+  port: 8087
+
+tax-service:
+  getUserDetailsUrl: http://localhost:8088/user-details
