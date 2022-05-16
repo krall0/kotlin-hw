@@ -37,14 +37,15 @@ class JdbcUserRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : UserRepos
         jdbcTemplate.query(selectAllByNameQuery, rowMapper, name, size, page * size)
 
     override fun add(userEntity: UserEntity) {
-        val statementCreator = PreparedStatementCreator { con ->
-            val ps = con.prepareStatement(insertQuery)
-            ps.setObject(1, userEntity.id)
-            ps.setString(2, userEntity.name)
-            ps.setString(3, userEntity.docNumber)
-            ps.setString(4, userEntity.inn)
-            ps
+        PreparedStatementCreator { con ->
+            con.prepareStatement(insertQuery).apply {
+                setObject(1, userEntity.id)
+                setString(2, userEntity.name)
+                setString(3, userEntity.docNumber)
+                setString(4, userEntity.inn)
+            }
+        }.also {
+            jdbcTemplate.update(it)
         }
-        jdbcTemplate.update(statementCreator)
     }
 }

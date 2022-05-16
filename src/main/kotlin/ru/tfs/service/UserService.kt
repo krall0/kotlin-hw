@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import ru.tfs.db.entity.UserEntity
 import ru.tfs.db.repository.UserRepository
 import ru.tfs.exception.UserNotFoundException
-import ru.tfs.model.AddUserRequest
+import ru.tfs.model.UserRequest
 import ru.tfs.model.UserInfo
 import java.util.*
 
@@ -14,14 +14,14 @@ class UserService(
     private val taxClient: TaxClient
 ) {
 
-    fun addUser(addUserRequest: AddUserRequest) {
-        val inn = taxClient.getInn(addUserRequest.docNumber)
+    fun addUser(userRequest: UserRequest) {
+        val inn = taxClient.getInn(userRequest.docNumber)
         requireNotNull(inn) { "Invalid doc number" }
 
         val userEntity = UserEntity().apply {
             this.id = UUID.randomUUID()
-            this.name = addUserRequest.name
-            this.docNumber = addUserRequest.docNumber
+            this.name = userRequest.name
+            this.docNumber = userRequest.docNumber
             this.inn = inn
         }
         userRepository.add(userEntity)
